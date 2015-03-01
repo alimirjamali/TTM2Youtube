@@ -4,7 +4,9 @@ TTM2Youtube
 
 This program generates a video from [Tehran Traffic Map website](http://31.24.237.150/TTCCTrafficWebSite/PublicUsers/GraphicalTrafficMap/Default.aspx) and uploads it to Youtube.
 
-### Sample of a Tehran Traffic Map image:
+### Tehran Traffic Map images
+
+Traffic Map images are available as PNG files. This is an example of a traffic map downloaded in rush hour:
 
 ![](SampleMap.png)
 
