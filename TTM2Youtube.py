@@ -8,6 +8,7 @@
 
 import httplib, urllib, urllib2
 import time
+import tempfile,os
 
 # Currently Tehran Traffic Map is not available via a Domain. Here is the IP:
 myHost = "31.24.237.150"
@@ -20,6 +21,9 @@ etag_new=""
 
 # File index
 myFileNum = 1
+
+# Create tmp directory
+myTempDir = tempfile.mkdtemp(prefix="TTM2Youtube")
 
 while True:
 	# Connect to the server and retrieve headers
@@ -39,7 +43,7 @@ while True:
 		
 		# Read the PNG file and store in myMap val, write to ./tmp/########.png
 		myMap = urllib2.urlopen("http://" + myHost + myMapURL).read()
-		myFile = open("./tmp/" + str(myFileNum).zfill(8) + ".png", 'wb')
+		myFile = open(myTempDir + "/" + str(myFileNum).zfill(8) + ".png", 'wb')
 		myFile.write(myMap)
 		myFile.close()
 		# Increase file index for next map image	
