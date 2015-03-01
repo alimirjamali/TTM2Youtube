@@ -1,54 +1,61 @@
 #!/usr/bin/env python
 
-# This program downloads Tehran Traffic Map images from traffic control website ...
-# ... then it creates a video based on the images and upload them to Youtube.
+# This program downloads Tehran Traffic Map images from Tehran Traffic Control website ...
+# ... then it creates a video from the downloaded images and upload it to Youtube.!!!
 #
-#              --- Copyright Ali Mirjamali (2015) ---
+#                   --- Copyright Ali Mirjamali (2015) ---
 #
+#  --- This code should be GPL 2.0 compliant. Please report any issues ---
 
 import httplib, urllib, urllib2
 import time
-import tempfile,os
+import tempfile
 
-# Currently Tehran Traffic Map is not available via a Domain. Here is the IP:
+# Currently Tehran Traffic Map is not available via a Domain address. Here is the server's IP:
 myHost = "31.24.237.150"
 # The URL for the map image (PNG) is here:
 myMapURL = "/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png"
 
-# ETags to check if the map is updated
+# ETags to check if the map image file is updated on server
 etag_old=""
 etag_new=""
-
-# File index
-myFileNum = 1
 
 # Create tmp directory
 myTempDir = tempfile.mkdtemp(prefix="TTM2Youtube")
 
-while True:
-	# Connect to the server and retrieve headers
+# File index on temp directory
+myFileNum = 1
+
+# Read the PNG file from site and write to ########.png in temp directory
+def myFuncGetMap(index):
+	myMap = urllib2.urlopen("http://" + myHost + myMapURL).read()
+	myFile = open(myTempDir + "/" + str(index).zfill(8) + ".png", 'wb')
+	myFile.write(myMap)
+	myFile.close()
+	return
+
+# Retrieve ETag of the map PNG image to see if it is updated
+def myFuncGetETag():
 	myHTTPConnection = httplib.HTTPConnection(myHost)
 	myHTTPConnection.request("HEAD", myMapURL)
 	myResponse = myHTTPConnection.getresponse()
 	myHeaders = myResponse.getheaders()
+	return myResponse.getheader("etag")
+
+while True:
 	# Store the new ETag header in etag_new
-	etag_new = myResponse.getheader("etag")
+	etag_new = myFuncGetETag()
 	# Do we have a new refreshed map?
 	if etag_new != etag_old:
 		
-		# Code for sanity check. To be removed later
-		etag_old=etag_new
-		for header in myHeaders:
-			print header
-		
-		# Read the PNG file and store in myMap val, write to ./tmp/########.png
-		myMap = urllib2.urlopen("http://" + myHost + myMapURL).read()
-		myFile = open(myTempDir + "/" + str(myFileNum).zfill(8) + ".png", 'wb')
-		myFile.write(myMap)
-		myFile.close()
-		# Increase file index for next map image	
+		# Retrieve new file from server
+		myFuncGetMap(index=myFileNum)
+
+		# Increase file index for next map image, update ETag for last file
 		myFileNum+=1
+		etag_old=etag_new
+
 	else:
-		# If not, wait 15 seconds and check again
+		# If there is no any new map image to download, wait 15 seconds and check again
 		time.sleep(15)
 		continue
