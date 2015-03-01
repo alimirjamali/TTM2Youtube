@@ -8,6 +8,6 @@ This program generates a video from [Tehran Traffic Map website](http://31.24.23
 
 ![](SampleMap.png)
 
-Traffic Maps are available as PNG files on Traffic Control server (updating by their ASPX code on 5 minute intervals). Live example:
+Traffic Maps are available as PNG files on Traffic Control server. The PNG file is updated by their ASPX code on 5 minute intervals. Live example here:
 
 ![](http://31.24.237.150/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png)
