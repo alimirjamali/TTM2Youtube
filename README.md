@@ -2,7 +2,7 @@ TTM2Youtube
 ===========
 ### Tehran Traffic Map to Youtube Video
 
-This program generates a video from [Tehran Traffic Map website](http://31.24.237.150/TTCCTrafficWebSite/PublicUsers/GraphicalTrafficMap/Default.aspx) and uploads it to Youtube.
+This program generates videos of [Tehran Traffic Map](http://31.24.237.150/TTCCTrafficWebSite/PublicUsers/GraphicalTrafficMap/Default.aspx) and uploads it to Youtube. Videos are created on daily basis.
 
 ### Tehran Traffic Map images
 
