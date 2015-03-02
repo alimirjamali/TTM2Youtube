@@ -8,12 +8,13 @@
 #  --- This code should be GPL 2.0 compliant. Please report any issues ---
 
 import httplib, urllib, urllib2
-import time
+import time, datetime
 import tempfile
 
 # Currently Tehran Traffic Map is not available via a Domain address. Here is the server's IP:
 myHost = "31.24.237.150"
-# The URL for the map image (PNG) is here:
+# The URL for the map image (JPEG)
+# Note that the .png in URL is not correct and the actual data format is JPEG
 myMapURL = "/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png"
 
 # ETags to check if the map image file is updated on server
@@ -29,7 +30,9 @@ myFileNum = 1
 # Read the PNG file from site and write to ########.png in temp directory
 def myFuncGetMap(index):
 	myMap = urllib2.urlopen("http://" + myHost + myMapURL).read()
-	myFile = open(myTempDir + "/" + str(index).zfill(8) + ".png", 'wb')
+	myFile = open(myTempDir + "/" + str(index).zfill(8) + ".jpg", 'wb')
+	# Some messages for debuging
+	print datetime.datetime.now(), "Writing:", myFile.name
 	myFile.write(myMap)
 	myFile.close()
 	return

@@ -6,10 +6,10 @@ This program generates videos of [Tehran Traffic Map](http://31.24.237.150/TTCCT
 
 ### Tehran Traffic Map images
 
-Traffic Map images are available as PNG files on Tehran Traffic Control Web Server. This is an example of a traffic map downloaded in rush hour:
+Traffic Map images are available as JPEG files on Tehran Traffic Control Web Server (file extention in URL is incorrectly specified as PNG). This is an example of a traffic map downloaded in rush hour:
 
 ![](SampleMap.png)
 
-The PNG file is updated by server's ASPX code approximately every 5 minutes. Live example here:
+The JPEG file is updated by server's ASPX code approximately every 5 minutes. Live example here:
 
 ![](http://31.24.237.150/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png)
