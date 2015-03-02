@@ -37,9 +37,9 @@ def myFuncGetMap(index):
 # Retrieve ETag of the map PNG image to see if it is updated
 def myFuncGetETag():
 	myHTTPConnection = httplib.HTTPConnection(myHost)
-	myHTTPConnection.request("HEAD", myMapURL)
+	myHTTPConnection.request("HEAD", myMapURL,headers={"Cache-Control":"no-cache"})
 	myResponse = myHTTPConnection.getresponse()
-	myHeaders = myResponse.getheaders()
+	myHTTPConnection.close()
 	return myResponse.getheader("etag")
 
 while True:

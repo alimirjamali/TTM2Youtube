@@ -10,6 +10,6 @@ Traffic Map images are available as PNG files on Tehran Traffic Control Web Serv
 
 ![](SampleMap.png)
 
-The PNG file is updated by server's ASPX code on 5 minute intervals. Live example here:
+The PNG file is updated by server's ASPX code approximately every 5 minutes. Live example here:
 
 ![](http://31.24.237.150/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png)
