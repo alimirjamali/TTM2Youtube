@@ -19,18 +19,11 @@ myHost = "31.24.237.150"
 # Note that the .png in URL is not correct and the actual data format is JPEG
 myMapURL = "/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png"
 
-# ETags to check if the map image file is updated on server
-etag_old = ""
-etag_new = ""
-
 # We will upload one video per day
 today = datetime.date.today()
 
 # Create tmp directory
 myTempDir = tempfile.mkdtemp(prefix="TTM2Youtube")
-
-# File index on temp directory
-myFileNum = 1
 
 # Generate video for upload by calling avconv via a subprocess
 def myFuncGenerateVid():
@@ -59,40 +52,45 @@ def myFuncClearTemp(TempDir):
 	return
 
 # Read the PNG file from site and write to ########.png in temp directory
-def myFuncGetMap(index):
-	myMap = urllib2.urlopen("http://" + myHost + myMapURL).read()
-	myFile = open(myTempDir + "/" + str(index).zfill(8) + ".jpg", 'wb')
-	# Some messages for debuging
-	print datetime.datetime.now(), "Writing:", myFile.name
-	myFile.write(myMap)
-	myFile.close()
+def myFuncGetMap():
+	try:
+		myMap = urllib2.urlopen("http://" + myHost + myMapURL).read()
+		myFile = open(myTempDir + "/" + str(myFuncGetMap.index).zfill(8) + ".jpg", 'wb')
+		# Some messages for debuging
+		print datetime.datetime.now(), "Writing:", myFile.name
+		myFile.write(myMap)
+		myFile.close()
+		myFuncGetMap.index = myFuncGetMap.index+1
+	except:
+		print "Error getting map image from site"
 	return
+myFuncGetMap.index=1
 
-# Retrieve ETag of the map PNG image to see if it is updated
-def myFuncGetETag():
+# If there is a new map PNG image on the server, return true.
+def myFuncIsUpdated():
 	myHTTPConnection = httplib.HTTPConnection(myHost)
 	myHTTPConnection.request("HEAD", myMapURL,headers={"Cache-Control":"no-cache"})
 	try:
 		myResponse = myHTTPConnection.getresponse()
 		myHTTPConnection.close()
-		return myResponse.getheader("etag")
+		myFuncIsUpdated.etag_new = myResponse.getheader("etag")
+		if myFuncIsUpdated.etag_new != myFuncIsUpdated.etag_old:
+			myFuncIsUpdated.etag_old = myFuncIsUpdated.etag_new
+			return True
+		else:
+			return False
 	except httplib.BadStatusLine:
 		print "Error getting response from server"
-		return ""
+		return False
+myFuncIsUpdated.etag_new = ""
+myFuncIsUpdated.etag_old = ""
 
 while True:
 
-	# Store the new ETag header in etag_new
-	etag_new = myFuncGetETag()
 	# Do we have a new refreshed map?
-	if etag_new != etag_old and etag_new != "":
-		
+	if myFuncIsUpdated():
 		# Retrieve new file from server
-		myFuncGetMap(index=myFileNum)
-
-		# Increase file index for next map image, update ETag for last file
-		myFileNum+=1
-		etag_old=etag_new
+		myFuncGetMap()
 
 	# Upload the video on date change and clear temp, otherwise wait for 30 seconds to check for a new map
 	if today != datetime.date.today():
@@ -100,6 +98,6 @@ while True:
 		myFuncUpload2Youtube()
 		myFuncClearTemp(myTempDir)
 		today = datetime.date.today()
-		myFileNum = 1
+		myFuncGetMap.index = 1
 	else:
 		time.sleep(30)
