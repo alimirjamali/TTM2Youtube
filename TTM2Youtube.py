@@ -11,6 +11,7 @@ import httplib, urllib, urllib2
 import time, datetime
 import tempfile
 import subprocess
+import os
 
 # Currently Tehran Traffic Map is not available via a Domain address. Here is the server's IP:
 myHost = "31.24.237.150"
@@ -39,6 +40,8 @@ def myFuncGenerateVid():
 		'-i',
 		myTempDir + "/%08d.jpg",
 		'-r', '24',
+		'-b', '8M',
+		'-filter:v', '"setpts=4.0*PTS"',
 		myTempDir + "/output.mp4"]
 	pipe = subprocess.Popen(myCommandLine, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 	return
@@ -48,7 +51,11 @@ def myFuncUpload2Youtube():
 	return
 
 # Erase temp files
-def myFuncClearTemp():
+def myFuncClearTemp(TempDir):
+	if os.path.exists(TempDir): 
+		print "Ereasing temp directory"
+		# shutil.rmtree(myTempDir)
+		TempDir = tempfile.mkdtemp(prefix="TTM2Youtube")
 	return
 
 # Read the PNG file from site and write to ########.png in temp directory
@@ -65,16 +72,20 @@ def myFuncGetMap(index):
 def myFuncGetETag():
 	myHTTPConnection = httplib.HTTPConnection(myHost)
 	myHTTPConnection.request("HEAD", myMapURL,headers={"Cache-Control":"no-cache"})
-	myResponse = myHTTPConnection.getresponse()
-	myHTTPConnection.close()
-	return myResponse.getheader("etag")
+	try:
+		myResponse = myHTTPConnection.getresponse()
+		myHTTPConnection.close()
+		return myResponse.getheader("etag")
+	except httplib.BadStatusLine:
+		print "Error getting response from server"
+		return ""
 
 while True:
 
 	# Store the new ETag header in etag_new
 	etag_new = myFuncGetETag()
 	# Do we have a new refreshed map?
-	if etag_new != etag_old:
+	if etag_new != etag_old and etag_new != "":
 		
 		# Retrieve new file from server
 		myFuncGetMap(index=myFileNum)
@@ -83,12 +94,12 @@ while True:
 		myFileNum+=1
 		etag_old=etag_new
 
-	# Upload the video on date change and clear temp, otherwise wait for 15 seconds to check for a new map
+	# Upload the video on date change and clear temp, otherwise wait for 30 seconds to check for a new map
 	if today != datetime.date.today():
 		myFuncGenerateVid()
 		myFuncUpload2Youtube()
-		myFuncClearTemp()
+		myFuncClearTemp(myTempDir)
 		today = datetime.date.today()
 		myFileNum = 1
 	else:
-		time.sleep(15)
+		time.sleep(30)
