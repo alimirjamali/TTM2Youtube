@@ -35,8 +35,12 @@ def myFuncGenerateVid():
 		'-r', '24',
 		'-b', '8M',
 		'-filter:v', '"setpts=4.0*PTS"',
-		myTempDir + "/output.mp4"]
-	pipe = subprocess.Popen(myCommandLine, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+		"output.mp4"]
+	try:
+		print "Generating video for upload..."
+		pipe = subprocess.Popen(myCommandLine, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+	except:
+		print "Error generating video"	
 	return
 
 # Upload the video to Youtube
@@ -47,8 +51,14 @@ def myFuncUpload2Youtube():
 def myFuncClearTemp(TempDir):
 	if os.path.exists(TempDir): 
 		print "Ereasing temp directory"
-		# shutil.rmtree(myTempDir)
-		TempDir = tempfile.mkdtemp(prefix="TTM2Youtube")
+		for the_file in os.listdir(TempDir):
+		    file_path = os.path.join(TempDir, the_file)
+		    try:
+			if os.path.isfile(file_path):
+				print "Deleting..." + file_path
+				os.unlink(file_path)
+		    except Exception, e:
+		        print e
 	return
 
 # Read the PNG file from site and write to ########.png in temp directory
