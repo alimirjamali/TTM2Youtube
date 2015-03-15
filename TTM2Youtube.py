@@ -26,7 +26,7 @@ today = datetime.date.today()
 myTempDir = tempfile.mkdtemp(prefix="TTM2Youtube")
 
 # Generate video for upload by calling avconv via a subprocess
-def myFuncGenerateVid():
+def myFuncGenerateVid(filename):
 	myCommandLine = [
 		'avconv',
 		'-y',
@@ -34,16 +34,16 @@ def myFuncGenerateVid():
 		myTempDir + "/%08d.jpg",
 		'-r', '24',
 		'-b', '8M',
-		'-filter:v', '"setpts=4.0*PTS"',
-		"output.mp4"]
+		'-filter:v', 'setpts=4.0*PTS',
+		filename]
 	try:
 		print "Generating video for upload..."
 		pipe = subprocess.Popen(myCommandLine, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 	except:
 		print "Error generating video"	
-	return
+	return pipe
 
-# Upload the video to Youtube
+# Upload the video to Youtube (This code was cancled due to API restrictions on Iran. i.e. Manual upload!!!)
 def myFuncUpload2Youtube():
 	return
 
@@ -78,9 +78,9 @@ myFuncGetMap.index=1
 
 # If there is a new map PNG image on the server, return true.
 def myFuncIsUpdated():
-	myHTTPConnection = httplib.HTTPConnection(myHost)
-	myHTTPConnection.request("HEAD", myMapURL,headers={"Cache-Control":"no-cache"})
 	try:
+		myHTTPConnection = httplib.HTTPConnection(myHost)
+		myHTTPConnection.request("HEAD", myMapURL,headers={"Cache-Control":"no-cache"})
 		myResponse = myHTTPConnection.getresponse()
 		myHTTPConnection.close()
 		myFuncIsUpdated.etag_new = myResponse.getheader("etag")
@@ -104,7 +104,7 @@ while True:
 
 	# Upload the video on date change and clear temp, otherwise wait for 30 seconds to check for a new map
 	if today != datetime.date.today():
-		myFuncGenerateVid()
+		myFuncGenerateVid(os.getcwd() + "/" + str(today) + ".mp4")
 		myFuncUpload2Youtube()
 		myFuncClearTemp(myTempDir)
 		today = datetime.date.today()
