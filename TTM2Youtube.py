@@ -92,6 +92,9 @@ def myFuncIsUpdated():
 	except httplib.BadStatusLine:
 		print "Error getting response from server"
 		return False
+	except:
+		print "Error"
+		return False
 myFuncIsUpdated.etag_new = ""
 myFuncIsUpdated.etag_old = ""
 

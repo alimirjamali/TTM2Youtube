@@ -13,3 +13,7 @@ Traffic Map images are available as JPEG files on Tehran Traffic Control Web Ser
 The JPEG file is updated by server's ASPX code approximately every 5 minutes. Live example here:
 
 ![](http://31.24.237.150/TTCCTrafficWebSite/UploadedFiles/WebTrafficImages/Web0.png)
+
+### Further development
+
+This project should be updated to support higher quality maps from [tehrantrafficmap.ir](http://tehrantrafficmap.ir/) site.
