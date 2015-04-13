@@ -17,3 +17,10 @@ The JPEG file is updated by server's ASPX code approximately every 5 minutes. Li
 ### Further development
 
 This project should be updated to support higher quality maps from [tehrantrafficmap.ir](http://tehrantrafficmap.ir/) site.
+
+### Development notes
+
+It might be possible to generate video directly from Python without calling avconv externally. Some good resources to look into:
+
+http://zulko.github.io/blog/2013/09/27/read-and-write-video-frames-in-python-using-ffmpeg/
+
